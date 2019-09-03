@@ -10,11 +10,9 @@ module Keycloak
 
     def decode_and_verify(token)
       unless token.nil? || token&.empty?
-        public_key    = @key_resolver.find_public_keys
-        decoded_token = JSON::JWT.decode(token, public_key)
+        decoded_token = JSON::JWT.decode(token, :skip_verification)
 
         unless expired?(decoded_token)
-          decoded_token.verify!(public_key)
           decoded_token
         else
           raise TokenError.expired(token)
